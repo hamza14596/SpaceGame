@@ -2,23 +2,32 @@ import pygame
 from pygame import mixer
 import random
 import math
+import sys
+import os
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS  # PyInstaller temp folder
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 pygame.init()
 mixer.init()
 screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("Outer Heroes")
 
-background = pygame.image.load("bgi.png")
-mixer.music.load('AttackOfTheKillerQueen.wav')
+background = pygame.image.load(resource_path("bgi.png"))
+mixer.music.load(resource_path('AttackOfTheKillerQueen.wav'))
 mixer.music.set_volume(0.5)
 mixer.music.play(-1)
 
-playerFace = pygame.image.load('spaceship.png')
+playerFace = pygame.image.load(resource_path('spaceship.png'))
 playerX = 370
 playerY = 480
 playerX_change = 0
 
-ghostFace = pygame.image.load('space.png')
+ghostFace = pygame.image.load(resource_path('space.png'))
 ghostX = []
 ghostY = []
 ghostX_change = []
@@ -31,7 +40,7 @@ for i in range(num_of_ghosts):
     ghostX_change.append(0.3)
     ghostY_change.append(50)
 
-bulletFace = pygame.image.load('bullet.png')
+bulletFace = pygame.image.load(resource_path('bullet.png'))
 bulletX = playerX
 bulletY = 480
 bulletY_change = 3
@@ -67,7 +76,7 @@ def is_collision(ghostX, ghostY, bulletX, bulletY):
     distance = math.sqrt((math.pow(ghostX - bulletX, 2)) + (math.pow(ghostY - bulletY, 2)))
     return distance < 27
 
-explosion_sound = mixer.Sound('deltarune-explosionn.wav')
+explosion_sound = mixer.Sound(resource_path('deltarune-explosionn.wav'))
 explosion_sound.set_volume(0.5)
 
 running = True
@@ -89,7 +98,7 @@ while running:
                     playerX_change = 0.7
                 if event.key == pygame.K_UP:
                     if bulletFlag == "Ready":
-                        bullet_sound = mixer.Sound('laser.wav')
+                        bullet_sound = mixer.Sound(resource_path('laser.wav'))
                         bullet_sound.set_volume(0.2)
                         bullet_sound.play()
                         bulletX = playerX
@@ -105,7 +114,6 @@ while running:
 
         for i in range(num_of_ghosts):
             if ghostY[i] + 64 >= playerY and ghostY[i] <= playerY + 64 and ghostX[i] < playerX + 64 and ghostX[i] + 64 > playerX:
-
                 for j in range(num_of_ghosts):
                     ghostY[j] = 2000
                 game_over = True
